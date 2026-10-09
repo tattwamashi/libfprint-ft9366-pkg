@@ -46,7 +46,7 @@ groups=(fprint)
 source=("git+https://gitlab.freedesktop.org/libfprint/libfprint.git#tag=v$pkgver"
         ft9366-driver.patch)
 b2sums=('56cbe62a6d4b98d1de90f45bae8de605418802d1b4d8d5dc55a8557a65045b115df51daf8385decdebd8aea79c86103467d5a327cbd461030d450f0e15466d08'
-        'da43fc1e8d65757cf2d35424318180d2b9bc578d913ed726900ee02b94462074daf3378334d4093773ff0107636e7952ff788db214d580cc7807da309d6e572f')
+        '481f9892dfabba183c3bc4d4b9990f329cf3bf5b4942e47fbc14ac8c197ba1cf88d4bbd703cf4ced2b54021cd64164e2f81331df12e4d94365e93fd01eecedd7')
 
 prepare() {
   cd $_pkgname

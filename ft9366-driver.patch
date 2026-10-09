@@ -24,10 +24,10 @@ index 104ce5e..0a97e72 100644
  usb:v2DF0p0003*
 diff --git a/libfprint/drivers/ft9366-match.c b/libfprint/drivers/ft9366-match.c
 new file mode 100644
-index 0000000..7cc164a
+index 0000000..cc4cebb
 --- /dev/null
 +++ b/libfprint/drivers/ft9366-match.c
-@@ -0,0 +1,1117 @@
+@@ -0,0 +1,1118 @@
 +/*
 + * FocalTech FT9366 image processing and matching
 + *
@@ -179,7 +179,8 @@ index 0000000..7cc164a
 + *    pose in both position and orientation
 + *
 + * Parameters follow the published SIFT defaults except the contrast and edge
-+ * thresholds, which are tuned for this sensor (docs/ALGORITHM.md, stage 3).
++ * thresholds, which are tuned for this sensor: fingerprint ridges make most
++ * structure edge-like, and the small image leaves few strong extrema.
 + */
 +
 +#define SIFT_INTVLS        3
@@ -1147,10 +1148,10 @@ index 0000000..7cc164a
 +}
 diff --git a/libfprint/drivers/ft9366-match.h b/libfprint/drivers/ft9366-match.h
 new file mode 100644
-index 0000000..cb4ab7b
+index 0000000..0056ec0
 --- /dev/null
 +++ b/libfprint/drivers/ft9366-match.h
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,94 @@
 +/*
 + * FocalTech FT9366 image processing and matching
 + *
@@ -1238,7 +1239,8 @@ index 0000000..cb4ab7b
 +
 +/* Same finger when the keypoint pose is backed by the ridges themselves,
 + * or when so many keypoints agree that chance is out of the question
-+ * (docs/RESULTS.md: impostors reached at most 6 inliers and 0.50 correlation). */
++ * (on recorded test sets, other fingers reached at most 6 inliers and 0.56
++ * correlation). */
 +#define FT9366_MIN_INLIERS   4
 +#define FT9366_MIN_NCC       0.65
 +#define FT9366_SURE_INLIERS  12
@@ -1246,10 +1248,10 @@ index 0000000..cb4ab7b
 +gboolean ft9366_match_accept (const Ft9366MatchInfo *info);
 diff --git a/libfprint/drivers/ft9366.c b/libfprint/drivers/ft9366.c
 new file mode 100644
-index 0000000..3972469
+index 0000000..ab49efc
 --- /dev/null
 +++ b/libfprint/drivers/ft9366.c
-@@ -0,0 +1,1360 @@
+@@ -0,0 +1,1361 @@
 +/*
 + * FocalTech FT9366 (Realtek RTS5811 USB bridge) driver for libfprint
 + *
@@ -1280,7 +1282,8 @@ index 0000000..3972469
 +#include <math.h>
 +
 +/*
-+ * Wire protocol, worked out from usbmon captures (see re/PROTOCOL.md):
++ * Wire protocol, worked out from usbmon captures (notes:
++ * https://github.com/V8V88V8V88/ft9366-rek/blob/main/re/PROTOCOL.md):
 + *
 + *   bulk OUT 0x01 / bulk IN 0x82
 + *   byte 0 = opcode, byte 1 = ~opcode, multi-byte fields big-endian
